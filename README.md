@@ -68,3 +68,5 @@ docker-compose down
 
 - [conduktor kafka全家桶](https://github.com/conduktor/kafka-stack-docker-compose/)
 - [入门](https://developer.confluent.io/quickstart/kafka-docker/)
+- [启动失败说明](https://github.com/wurstmeister/kafka-docker/issues/559)
+- [启动失败说明](https://stackoverflow.com/questions/59592518/kafka-broker-doesnt-find-cluster-id-and-creates-new-one-after-docker-restart)
