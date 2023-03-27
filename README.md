@@ -61,8 +61,24 @@ docker-compose down
 
 ./kafka-console-producer.sh --broker-list :9092 --topic w2
  
-./kafka-console-consumer.sh --bootstrap-server :9092 --topic w2
+./kafka-console-consumer.sh --bootstrap-server :9092 --topic w2  --from-beginning 
+
+./kafka-topics.sh  --bootstrap-server xwj-kafka-1.com:9092 --topic order-union-qa --describe
+
+./kafka-topics.sh  --bootstrap-server xwj-kafka-1.com:9092 --list
+
+./kafka-topics.sh  --bootstrap-server xwj-kafka-1.com:9092 --create --topic xx1 --partitions 3 --replication-factor 2  --config max.message.bytes=64000    
+
+./kafka-configs.sh --bootstrap-server xwj-kafka-1.com:9092  --entity-type topics --entity-name xx1 --alter --add-config max.message.bytes=128000
+
+#显示动态设置的配置
+./kafka-configs.sh  --bootstrap-server xwj-kafka-1.com:9092  --entity-type topics --entity-name xx1 --describe
+
+#查看一个消费组情况
+./kafka-consumer-groups.sh  --bootstrap-server xwj-kafka-qafz-1.com:9092  --describe --group article-score 
 ```
+
+ 
 
 ### 参考
 
