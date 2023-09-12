@@ -53,32 +53,69 @@ docker-compose down
 ### 使用参考
 
 ```
+# 查看所有topic详细信息
 ./kafka-topics.sh  --describe --bootstrap-server  :9092
-
 ./kafka-topics.sh  --describe --zookeeper :2181
 
+# 创建一个topic
 ./kafka-topics.sh --create --topic w2 --partitions 1 --zookeeper :2181 --replication-factor 3
 
+# 生产者发送消息
 ./kafka-console-producer.sh --broker-list :9092 --topic w2
- 
+
+# 从头开始消费一个topic
 ./kafka-console-consumer.sh --bootstrap-server :9092 --topic w2  --from-beginning 
 
-./kafka-topics.sh  --bootstrap-server xwj-kafka-1.com:9092 --topic order-union-qa --describe
+# 显示某一个topic
+./kafka-topics.sh  --bootstrap-server xwj-kafka-1.com:9092 --topic jgtaskon --describe
 
+Topic: article  PartitionCount: 3 ReplicationFactor: 1  Configs: segment.bytes=1073741824
+  Topic: article  Partition: 0  Leader: 1 Replicas: 1 Isr: 1
+  Topic: article  Partition: 1  Leader: 2 Replicas: 2 Isr: 2
+  Topic: article  Partition: 2  Leader: 3 Replicas: 3 Isr: 3
+
+# 以列表的形式显示所有topic
 ./kafka-topics.sh  --bootstrap-server xwj-kafka-1.com:9092 --list
 
+# 修改topic的分区数量（只能增加，不能减小）
+./kafka-topics.sh  --bootstrap-server xwj-kafka-1.com:9092 --topic topicname --alter --partitions 30
+
+# 创建一个topic，并动态配置相关属性
 ./kafka-topics.sh  --bootstrap-server xwj-kafka-1.com:9092 --create --topic xx1 --partitions 3 --replication-factor 2  --config max.message.bytes=64000    
 
-./kafka-configs.sh --bootstrap-server xwj-kafka-1.com:9092  --entity-type topics --entity-name xx1 --alter --add-config max.message.bytes=128000
+# 动态修改属性，--entity-type表示修改topic，--entity-name是topic名称
+./kafka-configs.sh --bootstrap-server xwj-kafka-1.com:9092  --entity-type topics --entity-name topicname --alter --add-config max.message.bytes=128000
 
-#显示动态设置的配置
-./kafka-configs.sh  --bootstrap-server xwj-kafka-1.com:9092  --entity-type topics --entity-name xx1 --describe
+# 显示动态设置的相关属性
+./kafka-configs.sh  --bootstrap-server xwj-kafka-1.com:9092  --entity-type topics --entity-name topicname --describe
 
-#查看一个消费组情况
-./kafka-consumer-groups.sh  --bootstrap-server xwj-kafka-qafz-1.com:9092  --describe --group article-score 
+# 查看一个消费组情况，包含GROUP/TOPIC/PARTITION/CURRENT-OFFSET/LOG-END-OFFSET/LAG/CONSUMER-ID/HOST/CLIENT-ID
+./kafka-consumer-groups.sh  --bootstrap-server xwj-kafka-qafz-1.com:9092  --describe --group sapp 
+
+# 指定消费组消费
+./kafka-console-consumer.sh --bootstrap-server  kafka1:9092 --topic test_partition --consumer-property  group.id=test_group
+
+# 删除一个topic
+./kafka-topics.sh --bootstrap-server xwj-kafka-1.com:9092  --topic topicname --delete
+
+# 删除一个消费者组 (确保没有在消费了 Deletion of some consumer groups failed：The group is not empty)
+./kafka-consumer-groups.sh --bootstrap-server  xwj-kafka-1.com:9092 --group groupname --delete
+
+# 查看topic大小
+kafka-log-dirs.sh \
+  --bootstrap-server xwj-kafka-1.com:9092 \
+  --topic-list article \
+  --describe \
+  | grep -oP '(?<=size":)\d+'  \
+  | awk '{ sum += $1 } END { print sum }'
+
+# 从尾部开始消费（指定分区）
+kafka-console-consumer.sh --bootstrap-server --topic mytopic  --offset latest  --partition 0 1 2 
+kafka-console-consumer.sh --bootstrap-server --topic mytopic  --offset latest  --partition 0 1 2 --max-messages 2
+
+# 查看消息内容
+$ kafka-dump-log.sh --files cr7-topic-0/00000000000000000000.log  -deep-iteration --print-data-log
 ```
-
- 
 
 ### 参考
 
