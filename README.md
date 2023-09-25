@@ -69,10 +69,12 @@ docker-compose down
 # 显示某一个topic
 ./kafka-topics.sh  --bootstrap-server xwj-kafka-1.com:9092 --topic jgtaskon --describe
 
-Topic: article  PartitionCount: 3 ReplicationFactor: 1  Configs: segment.bytes=1073741824
-  Topic: article  Partition: 0  Leader: 1 Replicas: 1 Isr: 1
-  Topic: article  Partition: 1  Leader: 2 Replicas: 2 Isr: 2
-  Topic: article  Partition: 2  Leader: 3 Replicas: 3 Isr: 3
+opic: testnew PartitionCount: 3 ReplicationFactor: 3  Configs: segment.bytes=1073741824
+  Topic: testnew  Partition: 0  Leader: 1 Replicas: 1,2,3 Isr: 1,2,3
+  Topic: testnew  Partition: 1  Leader: 2 Replicas: 2,3,1 Isr: 2,3,1
+  Topic: testnew  Partition: 2  Leader: 3 Replicas: 3,1,2 Isr: 3,1,2
+
+Partition表示分区编号，Leader表示主分区ID
 
 # 以列表的形式显示所有topic
 ./kafka-topics.sh  --bootstrap-server xwj-kafka-1.com:9092 --list
